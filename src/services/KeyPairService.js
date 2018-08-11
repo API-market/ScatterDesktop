@@ -51,12 +51,12 @@ export default class KeyPairService {
         })
     }
 
-    static async generateKeyPair(keypair){
+    static async generateKeyPair(keypair, prefix = null){
         const plugin = PluginRepository.plugin(keypair.blockchain);
         if(!plugin) return false;
 
         plugin.randomPrivateKey().then(privateKey => {
-            const publicKey = plugin.privateToPublic(privateKey);
+            const publicKey = plugin.privateToPublic(privateKey, prefix);
             if(plugin.validPublicKey(publicKey) && plugin.validPrivateKey(privateKey)){
                 keypair.publicKey = publicKey;
                 keypair.privateKey = privateKey;

@@ -89,7 +89,7 @@
             submitting:false,
         }},
         mounted(){
-            this.eos = Eos({httpEndpoint:this.account.network().fullhost(), chainId:this.account.network().chainId});
+            this.EOSIO = Eos({httpEndpoint:this.account.network().fullhost(), chainId:this.account.network().chainId});
             this.init();
         },
         computed:{
@@ -131,7 +131,7 @@
             },
             async init(){
                 const parseAsset = asset => asset.split(' ')[0];
-                const ramInfo = await this.eos.getTableRows({
+                const ramInfo = await this.EOSIO.getTableRows({
                     json:true,
                     code:'eosio',
                     scope:'eosio',
@@ -144,7 +144,7 @@
 
                 this.pricePerByte = (ramInfo[0] / ramInfo[1]).toFixed(8);
 
-                PluginRepository.plugin(Blockchains.EOS).accountData(this.account, this.account.network()).then(data => {
+                PluginRepository.plugin(Blockchains.EOSIO).accountData(this.account, this.account.network()).then(data => {
                     this.fetchedBalance = true;
                     if(!data) {
                         this.balance = 'Error getting balance';
@@ -178,7 +178,7 @@
 
                 this.submitting = true;
 
-                PluginRepository.plugin(Blockchains.EOS).buyOrSellRAM(this.account, bytes, this.account.network(), this.buying).then(res => {
+                PluginRepository.plugin(Blockchains.EOSIO).buyOrSellRAM(this.account, bytes, this.account.network(), this.buying).then(res => {
                     if(!res || !res.hasOwnProperty('transaction_id')) {
                         this.submitting = false;
                         return false;

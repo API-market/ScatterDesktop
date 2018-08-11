@@ -77,7 +77,7 @@ export default class ApiService {
             const identity = PermissionService.identityFromPermissions(request.payload.origin);
             if(!identity) return resolve({id:request.id, result:Error.identityMissing()});
 
-            const plugin = PluginRepository.plugin(Blockchains.EOS);
+            const plugin = PluginRepository.plugin(Blockchains.EOSIO);
             const signed = await plugin.signer({data:request.payload.origin}, identity.publicKey, true);
             resolve({id:request.id, result:signed});
         })
@@ -146,7 +146,7 @@ export default class ApiService {
 
             // Convert buf and abi to messages
             switch(blockchain){
-                case Blockchains.EOS: payload.messages = await plugin.requestParser(payload, Network.fromJson(payload.network)); break;
+                case Blockchains.EOSIO: payload.messages = await plugin.requestParser(payload, Network.fromJson(payload.network)); break;
                 case Blockchains.ETH: payload.messages = await plugin.requestParser(payload, payload.hasOwnProperty('abi') ? payload.abi : null); break;
             }
 
