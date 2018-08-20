@@ -108,6 +108,12 @@ export default class KeyPairService {
         });
     }
 
+    static exportKeyPairWithSeed(keypair, callback){
+        const data = JSON.stringify(keypair) + '|SEED|' + store.state.seed;
+        const filename = `scatter_keypair_${keypair.id}`;
+        FileService.exportData(data, filename).then((success) => callback(success));
+    }
+
     static getKeyPairFromPublicKey(publicKey, decrypt = false){
         const keypair = store.state.scatter.keychain.keypairs.find(x => x.publicKey === publicKey);
         if(keypair) {
