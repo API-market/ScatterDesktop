@@ -20,6 +20,20 @@ const saveFile = (data, _filename) => {
     });
 };
 
+const readFile = (filename) => {
+    return new Promise(resolve => {
+        try {
+            const data = fs.readFileSync(filename, 'utf-8');
+            const clean = data.trim();
+            resolve(clean);
+        }
+        catch(e) {
+            console.error('Error reading file', e);
+            resolve(false);
+        }
+    });
+}
+
 const getFilename = () => {
     const filename = remote.dialog.showOpenDialog({properties: ['openFile']});
     if(!filename) return false;
@@ -38,6 +52,10 @@ export default class FileService {
         const filename = `${location}/${_filename}`;
 
         return saveFile(data, filename);
+    }
+
+    static importData(filename = getFilename()){
+        return readFile(filename);
     }
 
 }
