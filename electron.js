@@ -41,6 +41,8 @@ const setupMenu = () => {
 };
 
 app.on('ready', function () {
+    BrowserWindow.addDevToolsExtension("~/Library/Application\ Support/Google/Chrome/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/3.2.4_0");
+    console.log("HEllo World");
 
     // Initialize the window to our specified dimensions
     win = new BrowserWindow({

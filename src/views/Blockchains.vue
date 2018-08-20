@@ -11,6 +11,8 @@
                             :class="{'active':subMenuType === subMenuTypes.KEYS}">Accounts</figure>
                     <figure class="item-type" @click="subMenuType = subMenuTypes.NETWORKS"
                             :class="{'active':subMenuType === subMenuTypes.NETWORKS}">Networks</figure>
+                    <figure class="item-type" @click="subMenuType = subMenuTypes.TOKENS"
+                            :class="{'active':subMenuType === subMenuTypes.TOKENS}">Tokens</figure>
                 </section>
 
                 <menu-search></menu-search>
@@ -33,6 +35,15 @@
                     </figure>
                 </section>
 
+                <section class="item" v-if="subMenuType === subMenuTypes.TOKENS"
+                         :class="{'active':selectedSubMenuItem && selectedSubMenuItem.address === token.address}"
+                         v-for="token in filteredTokens" @click="selectedSubMenuItem = token">
+                    <figure class="title">{{token.name}}</figure>
+                    <figure class="description">
+                        Blockchain: <b>{{token.blockchain.toUpperCase()}}</b>
+                    </figure>
+                </section>
+
             </section>
         </section>
 
@@ -43,6 +54,8 @@
                          :key="selectedSubMenuItem.id" :kp="selectedSubMenuItem"></keypair>
                 <network v-on:selected="selectedNewItem" v-if="subMenuType === subMenuTypes.NETWORKS && selectedSubMenuItem"
                          :key="selectedSubMenuItem.id" :net="selectedSubMenuItem"></network>
+                <token v-on:selected="selectedNewItem" v-if="subMenuType === subMenuTypes.TOKENS && selectedSubMenuItem"
+                         :key="selectedSubMenuItem.id" :net="selectedSubMenuItem"></token>
             </transition>
         </section>
 
@@ -56,10 +69,12 @@
 
     import Keypair from '../models/Keypair'
     import Network from '../models/Network'
+    import Token from '../models/Token'
 
     const SubMenuTypes = {
         KEYS:'Keypair',
-        NETWORKS:'Network'
+        NETWORKS:'Network',
+        TOKENS:'Token'
     };
 
     export default {
@@ -77,7 +92,8 @@
             ...mapGetters([
                 'keypairs',
                 'accounts',
-                'networks'
+                'networks',
+                'tokens'
             ]),
             filteredKeypairs(){
                 return this.keypairs.filter(x => (this.selectedSubMenuItem !== null && x.id === this.selectedSubMenuItem.id) ||
@@ -88,6 +104,12 @@
                 return this.networks.filter(x => (this.selectedSubMenuItem !== null && x.id === this.selectedSubMenuItem.id) ||
                                                  x.name.toLowerCase().indexOf(this.searchTerms.toLowerCase()) > -1 ||
                                                  x.unique().toLowerCase().indexOf(this.searchTerms.toLowerCase()) > -1)
+            },
+            filteredTokens(){
+              console.log("filteredTokens::", this.tokens);
+                return this.keypairs.filter(x => (this.selectedSubMenuItem !== null && x.id === this.selectedSubMenuItem.id) ||
+                                                 x.name.toLowerCase().indexOf(this.searchTerms.toLowerCase()) > -1)// ||
+                                                 //x.address().toLowerCase().indexOf(this.searchTerms.toLowerCase()) > -1)
             }
         },
         mounted(){
@@ -102,6 +124,10 @@
                 if(this.subMenuType === SubMenuTypes.NETWORKS){
                     if(this.networks.length) this.selectedSubMenuItem = this.networks[0];
                     else this.selectedSubMenuItem = Network.placeholder();
+                }
+                if(this.subMenuType === SubMenuTypes.TOKENS){
+                    if(this.tokens.length) this.selectedSubMenuItem = this.tokens[0];
+                    else this.selectedSubMenuItem = Token.placeholder();
                 }
             },
             newItem(){
